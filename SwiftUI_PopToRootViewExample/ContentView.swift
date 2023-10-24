@@ -8,14 +8,41 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State private var path: [Int] = []
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack(path: $path) {
+
+            Button("Start") {
+                path.append(1)
+
+            }
+            .navigationDestination(for: Int.self) { int in
+                DetailView(path: $path, count: int)
+            }
+            .navigationTitle("Home")
         }
-        .padding()
+    }
+}
+
+struct DetailView: View {
+    @Binding var path: [Int]
+
+    let count: Int
+    
+    var body: some View {
+        Button("Go deeper") {
+            path.append(count + 1)
+        }
+        .navigationBarTitle(count.description)
+        .toolbar {
+            ToolbarItem(placement: .bottomBar) {
+                Button("Pop to Root") {
+                    path = []
+                }
+            }
+        }
     }
 }
 
